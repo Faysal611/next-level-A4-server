@@ -13,56 +13,66 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id Int @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   providerProfile ProviderProfile?
-  role roles
+  role            roles
+  name            String
+  email           String
+  emailVerified   Boolean          @default(false)
+  image           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  sessions        Session[]
+  accounts        Account[]
+
+  @@unique([email])
+  @@map("user")
 }
 
 model ProviderProfile {
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references: [id])
-  userId Int @unique
-  about String? @db.VarChar(250)
-  restaurant String @db.VarChar(50)
-  meals meal[]
+  id         Int     @id @default(autoincrement())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int     @unique
+  about      String? @db.VarChar(250)
+  restaurant String  @db.VarChar(50)
+  meals      meal[]
 
 }
 
 model meal {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(100)
+  id              Int             @id @default(autoincrement())
+  name            String          @db.VarChar(100)
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
-  providerId Int @unique
-  ingredients String[]
-  tags String[]
-  description String
-  review review[]
-  orderId order[]
-  cuisine catagory @relation(fields: [cuisineId], references: [id])
-  cuisineId Int
+  providerId      Int             @unique
+  ingredients     String[]
+  tags            String[]
+  description     String
+  review          review[]
+  orderId         order[]
+  cuisine         catagory        @relation(fields: [cuisineId], references: [id])
+  cuisineId       Int
 }
 
 model review {
-  id Int @id @default(autoincrement())
-  rating Float
+  id      Int    @id @default(autoincrement())
+  rating  Float
   comment String @db.VarChar(250)
-  meal meal @relation(fields: [mealId], references: [id])
-  mealId Int
+  meal    meal   @relation(fields: [mealId], references: [id])
+  mealId  Int
 }
 
 model order {
-  id Int @id @default(autoincrement())
-  meal meal @relation(fields: [mealId], references: [id])
+  id     Int    @id @default(autoincrement())
+  meal   meal   @relation(fields: [mealId], references: [id])
   mealId Int
   status status
 }
 
 model catagory {
-  id Int @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   cuisine Cuisine
-  meal meal[]
+  meal    meal[]
 }
 
 enum status {
@@ -86,7 +96,7 @@ enum Cuisine {
   Japanese
   Thai
   American
-  Greek 
+  Greek
   Peranakan
 
   Turkish
@@ -112,4 +122,52 @@ enum Cuisine {
   German
   British
   Portuguese
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                Int
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
