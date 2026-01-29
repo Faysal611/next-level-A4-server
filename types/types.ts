@@ -1,3 +1,8 @@
-export interface roles {
-    role: "customer" | "admin" | "provider"
+export interface CreateMeal {
+    cuisine: string,
+    description: string,
+    name: string,
+    tags: string[],
+    providerId: string,
+    price: number
 }
