@@ -1,4 +1,4 @@
-import { mealUncheckedCreateInput, ProviderProfileUncheckedCreateInput } from "../../../generated/prisma/models";
+import { mealUncheckedUpdateInput, ProviderProfileUncheckedCreateInput } from "../../../generated/prisma/models";
 import { prisma } from "../../../lib/prisma";
 import { roles } from "../../../generated/prisma/enums";
 import { CreateMeal } from "../../../types/types";
@@ -43,7 +43,47 @@ const createMeal = async (meal: CreateMeal) => {
         })
 }
 
+const updateMeal = async (mealData: CreateMeal, mealId: string) => {
+    const { cuisine, ...restData } = mealData;
+    console.log(cuisine, restData);
+    if (!cuisine) {
+        return await prisma.meal.update({
+            where: { id: mealId },
+            data: { ...restData }
+        })
+    }
+
+    return await prisma.$transaction(async (tx) => {
+        const data = await tx.catagory.upsert({
+            where: { cuisine },
+            update: {},
+            create: {
+                cuisine
+            }
+        })
+
+        return await tx.meal.update({
+            where: { id: mealId },
+            data: {
+                ...restData,
+                cuisineId: data.id
+            }
+        })
+    }, {
+        maxWait: 20000,
+        timeout: 30000
+    })
+}
+
+const deleteMeal = async (mealId: string) => {
+    return await prisma.meal.delete({
+        where: {id: mealId}
+    })
+}
+
 export const providerService = {
     createProvider,
-    createMeal
+    createMeal,
+    updateMeal,
+    deleteMeal
 }

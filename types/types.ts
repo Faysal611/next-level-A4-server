@@ -1,3 +1,5 @@
+import { Session, User } from "better-auth"
+
 export interface CreateMeal {
     cuisine: string,
     description: string,
@@ -5,4 +7,13 @@ export interface CreateMeal {
     tags: string[],
     providerId: string,
     price: number
+}
+
+declare global {
+    namespace Express {
+        interface Request {
+            session?: Session,
+            user?: User
+        }
+    }
 }

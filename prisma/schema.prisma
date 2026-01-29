@@ -44,7 +44,7 @@ model meal {
   id              String              @id @default(cuid())
   name            String          @db.VarChar(100)
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  providerId      String             @unique
+  providerId      String             
   ingredients     String[]
   tags            String[]
   description     String
