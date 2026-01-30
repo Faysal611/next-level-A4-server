@@ -22,7 +22,7 @@ const createMeal = async (meal: CreateMeal) => {
     const { cuisine, ...mealWithoutCuisine } = meal;
 
     return await prisma.$transaction(async (tx) => {
-        const data = await tx.catagory.upsert({
+        const data = await tx.category.upsert({
             where: { cuisine },
             update: {},
             create: {
@@ -54,7 +54,7 @@ const updateMeal = async (mealData: CreateMeal, mealId: string) => {
     }
 
     return await prisma.$transaction(async (tx) => {
-        const data = await tx.catagory.upsert({
+        const data = await tx.category.upsert({
             where: { cuisine },
             update: {},
             create: {

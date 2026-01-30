@@ -12,7 +12,7 @@ app.all('/api/auth/{*any}', toNodeHandler(auth));
 app.use(express.json());
 
 app.use("/public", publicRouter);
-// app.use("/customer", customerRouter);
+app.use("/customer", customerRouter);
 app.use("/provider", providerRouter)
 
 app.get('/', (req, res) => {

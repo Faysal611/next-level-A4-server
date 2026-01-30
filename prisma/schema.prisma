@@ -33,7 +33,7 @@ model User {
 
 model ProviderProfile {
   id         String  @id @default(cuid())
-  user       User    @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String  @unique
   about      String? @db.VarChar(250)
   restaurant String  @db.VarChar(50)
@@ -50,7 +50,7 @@ model meal {
   description     String
   review          review[]
   orderId         order[]
-  cuisine         catagory?       @relation(fields: [cuisineId], references: [id])
+  cuisine         category?       @relation(fields: [cuisineId], references: [id])
   cuisineId       String
   price           Int
 }
@@ -67,19 +67,22 @@ model order {
   id     String @id @default(cuid())
   meal   meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId String
-  status status @default(pending)
+  status status @default(placed)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+  quantity Int
 }
 
-model catagory {
+model category {
   id      String @id @default(cuid())
   cuisine String @unique @db.VarChar(20)
   meal    meal[]
 }
 
 enum status {
-  pending
+  placed
+  preparing
+  ready
   delivered
   cancelled
 }

@@ -25,7 +25,7 @@ const getMeals = async (cuisine: string[], lowestPrice: number, highestPrice: nu
         })
     }
 
-    const cuisineData = await prisma.catagory.findMany({
+    const cuisineData = await prisma.category.findMany({
         where: {
             cuisine: {
                 in: cuisine
