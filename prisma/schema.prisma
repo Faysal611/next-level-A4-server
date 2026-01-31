@@ -38,6 +38,7 @@ model ProviderProfile {
   about      String? @db.VarChar(250)
   restaurant String  @db.VarChar(50)
   meals      meal[]
+  orders order[]
 }
 
 model meal {
@@ -71,6 +72,8 @@ model order {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   quantity Int
+  provider ProviderProfile @relation(fields: [providerId], references: [id])
+  providerId String
 }
 
 model category {

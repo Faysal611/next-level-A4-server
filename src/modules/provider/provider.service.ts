@@ -1,6 +1,6 @@
-import { mealUncheckedUpdateInput, ProviderProfileUncheckedCreateInput } from "../../../generated/prisma/models";
+import { ProviderProfileUncheckedCreateInput } from "../../../generated/prisma/models";
 import { prisma } from "../../../lib/prisma";
-import { roles } from "../../../generated/prisma/enums";
+import { roles, status } from "../../../generated/prisma/enums";
 import { CreateMeal } from "../../../types/types";
 
 const createProvider = async (data: ProviderProfileUncheckedCreateInput) => {
@@ -81,9 +81,21 @@ const deleteMeal = async (mealId: string) => {
     })
 }
 
+const updateOrder = async (orderId: string, status: status) => {
+    await prisma.order.update({
+        where: {
+            id: orderId
+        },
+        data: {
+            status
+        }
+    })
+}
+
 export const providerService = {
     createProvider,
     createMeal,
     updateMeal,
-    deleteMeal
+    deleteMeal,
+    updateOrder
 }

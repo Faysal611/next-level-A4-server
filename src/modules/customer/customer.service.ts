@@ -3,7 +3,27 @@ import { prisma } from "../../../lib/prisma"
 
 
 const createOrder = async (data: {mealId: string, userId: string, quantity: number}) => {
-    return await prisma.order.create({data});
+    return await prisma.$transaction(async (tx) => {
+        const providerId = await tx.providerProfile.findFirst({
+            where: {
+                meals: {
+                    some: {
+                        id: data.mealId
+                    }
+                }
+            },
+            select: {
+                id: true
+            }
+        })
+
+        return await tx.order.create({
+            data: {
+                ...data,
+                providerId: providerId?.id as string
+            }
+        })
+    })
 }
 
 const getOrders = async (userId: string) => {

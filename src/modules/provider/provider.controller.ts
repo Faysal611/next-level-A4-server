@@ -41,9 +41,21 @@ const deleteMeal = async (req: Request, res: Response) => {
     }
 }
 
+const updateOrder = async (req: Request, res: Response) => {
+    try {
+        const {orderId} = req.params;
+        const {status} = req.body;
+        const data = await providerService.updateOrder(orderId as string, status);
+        res.status(200).send(data)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+}
 export const providerController = {
     createProvider,
     createMeal,
     updateMeal,
-    deleteMeal
+    deleteMeal,
+    updateOrder
 }

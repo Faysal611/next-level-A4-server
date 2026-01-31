@@ -1,0 +1,8 @@
+import { Router } from "express";
+import { adminController } from "./admin.controller";
+import { verify } from "../../middlewares/verify";
+import { roles } from "../../../generated/prisma/enums";
+
+export const adminRouter = Router();
+
+adminRouter.get("/users", verify(roles.admin), adminController.getUsers);

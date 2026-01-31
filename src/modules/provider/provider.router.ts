@@ -9,5 +9,6 @@ router.post("/create-provider", providerController.createProvider)
 router.post("/create-meal", verify(roles.provider), providerController.createMeal)
 router.post("/update-meal/:mealId", verify(roles.provider), providerController.updateMeal)
 router.delete("/delete-meal/:mealId", verify(roles.provider), providerController.deleteMeal)
+router.patch("/order/:orderId", verify(roles.provider), providerController.updateOrder)
 
 export const providerRouter = router;
