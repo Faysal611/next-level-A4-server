@@ -12,16 +12,17 @@ import cors from "cors";
 export const app = express();
 
 app.use(cors({
-    origin: [
-        "http://localhost:4000"
-    ],
-    credentials: true,                  // MUST be true for cookies/sessions
+    origin: ["http://localhost:4000"],
+    credentials: true, // Required for cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Set-Cookie"],     // if needed for debugging
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-}))
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Cookie",  // <--- Add this
+        "X-Requested-With"
+    ],
+    exposedHeaders: ["Set-Cookie"]
+}));
 
 app.get("/api/auth/me", verify(roles.admin, roles.customer, roles.provider), getUser)
 app.all('/api/auth/{*any}', toNodeHandler(auth));

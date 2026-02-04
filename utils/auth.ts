@@ -8,7 +8,6 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql"
     }),
-    trustedOrigins: [process.env.POSTMAN_URL!],
     user: {
         additionalFields: {
             role: {
@@ -29,5 +28,19 @@ export const auth = betterAuth({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }
-    }
+    },
+    trustedOrigins: [
+        "http://localhost:4000",              // for local dev
+    ],
+
+    advanced: {
+        defaultCookieAttributes: {
+            sameSite: "none",          // ← critical change
+            secure: true,              // ← must be true (HTTPS required)
+            httpOnly: true,
+            path: "/",
+        },
+        // optional but helpful
+        useSecureCookies: true,
+    },
 })

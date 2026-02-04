@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "./generated/client"
+  provider   = "prisma-client-js"
+  output     = "./generated/client"
   engineType = "client"
 }
 
@@ -17,7 +17,7 @@ datasource db {
 model User {
   id              String           @id @default(cuid())
   providerProfile ProviderProfile?
-  role            roles @default(customer)
+  role            roles            @default(customer)
   name            String
   email           String
   emailVerified   Boolean          @default(false)
@@ -27,8 +27,8 @@ model User {
   sessions        Session[]
   accounts        Account[]
   orders          order[]
-  reviews review[]
-  status userStatus? @default(active)
+  reviews         review[]
+  status          userStatus?      @default(active)
 
   @@unique([email])
   @@map("user")
@@ -57,7 +57,7 @@ model meal {
   cuisine         category?       @relation(fields: [cuisineId], references: [id], onDelete: Cascade)
   cuisineId       String
   price           Int
-  image String?
+  image           String?
 }
 
 model review {
@@ -66,8 +66,8 @@ model review {
   comment String @db.VarChar(250)
   meal    meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId  String
-  user User @relation(fields: [userId], references: [id])
-  userId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
 }
 
 model order {
@@ -97,8 +97,8 @@ enum status {
 }
 
 enum userStatus {
-    suspended
-    active
+  suspended
+  active
 }
 
 enum roles {
