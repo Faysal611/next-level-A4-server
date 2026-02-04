@@ -34,5 +34,5 @@ app.use("/provider", providerRouter);
 app.use("/admin", adminRouter);
 
 app.get('/', (req, res) => {
-    res.send('Welcome to FoodHub!')
+    res.send('Welcome to FoodHub server!')
 })
