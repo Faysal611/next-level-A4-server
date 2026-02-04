@@ -9,6 +9,14 @@ export interface CreateMeal {
     userId: string,
     price: number
 }
+export interface asa {
+    cuisine: string,
+    description: string,
+    name: string,
+    tags: string[],
+    userId: string,
+    price: number
+}
 
 export enum userStatus {
     suspended,
