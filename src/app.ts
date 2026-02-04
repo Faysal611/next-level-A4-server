@@ -11,14 +11,25 @@ import { adminRouter } from "./modules/admin/admin.router";
 import cors from "cors";
 export const app = express();
 
+const allowedOrigins = [
+    process.env.POSTMAN_URL || "http://localhost:4000",
+];
+
 app.use(cors({
-    origin: ["http://localhost:4000"],
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g., server-to-server, same-origin or Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        return callback(new Error("CORS policy: Origin not allowed"), false);
+    },
     credentials: true, // Required for cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: [
         "Content-Type",
         "Authorization",
-        "Cookie",  // <--- Add this
+        "Cookie",
         "X-Requested-With"
     ],
     exposedHeaders: ["Set-Cookie"]

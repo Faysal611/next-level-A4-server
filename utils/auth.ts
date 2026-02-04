@@ -30,7 +30,7 @@ export const auth = betterAuth({
         }
     },
     trustedOrigins: [
-        "http://localhost:4000",              // for local dev
+        process.env.POSTMAN_URL || "http://localhost:4000", // include deployed client URL via env var
     ],
 
     advanced: {
