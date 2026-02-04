@@ -41,7 +41,16 @@ const updateStatus = async (userId: string) => {
         })
 }
 
+const deleteCuisine = async (cuisineId: string) => {
+    return await prisma.category.delete({
+        where: {
+            id: cuisineId
+        }
+    })
+}
+
 export const adminService = {
     getUsers,
-    updateStatus
+    updateStatus,
+    deleteCuisine
 }

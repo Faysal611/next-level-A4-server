@@ -22,7 +22,19 @@ const updateStatus = async (req: Request, res: Response) => {
         res.status(400).send(error)
     }
 }
+
+const deleteCuisine = async (req: Request, res: Response) => {
+    try {
+        const { cuisineId } = req.params;
+        const data = await adminService.deleteCuisine(cuisineId as string);
+        res.status(200).send(data)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+}
 export const adminController = {
     getUsers,
-    updateStatus
+    updateStatus,
+    deleteCuisine
 }
