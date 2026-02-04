@@ -16,7 +16,7 @@ datasource db {
 model User {
   id              String           @id @default(cuid())
   providerProfile ProviderProfile?
-  role            roles
+  role            roles @default(customer)
   name            String
   email           String
   emailVerified   Boolean          @default(false)
@@ -26,6 +26,8 @@ model User {
   sessions        Session[]
   accounts        Account[]
   orders          order[]
+  reviews review[]
+  status userStatus? @default(active)
 
   @@unique([email])
   @@map("user")
@@ -38,7 +40,7 @@ model ProviderProfile {
   about      String? @db.VarChar(250)
   restaurant String  @db.VarChar(50)
   meals      meal[]
-  orders order[]
+  orders     order[]
 }
 
 model meal {
@@ -54,6 +56,7 @@ model meal {
   cuisine         category?       @relation(fields: [cuisineId], references: [id])
   cuisineId       String
   price           Int
+  image String?
 }
 
 model review {
@@ -62,17 +65,19 @@ model review {
   comment String @db.VarChar(250)
   meal    meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId  String
+  user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model order {
-  id     String @id @default(cuid())
-  meal   meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
-  mealId String
-  status status @default(placed)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  quantity Int
-  provider ProviderProfile @relation(fields: [providerId], references: [id])
+  id         String          @id @default(cuid())
+  meal       meal            @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  mealId     String
+  status     status          @default(placed)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  quantity   Int
+  provider   ProviderProfile @relation(fields: [providerId], references: [id])
   providerId String
 }
 
@@ -88,6 +93,11 @@ enum status {
   ready
   delivered
   cancelled
+}
+
+enum userStatus {
+    suspended
+    active
 }
 
 enum roles {

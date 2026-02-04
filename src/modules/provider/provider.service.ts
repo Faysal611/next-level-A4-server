@@ -19,9 +19,15 @@ const createProvider = async (data: ProviderProfileUncheckedCreateInput) => {
 }
 
 const createMeal = async (meal: CreateMeal) => {
-    const { cuisine, ...mealWithoutCuisine } = meal;
+    const { cuisine, userId, ...mealWithoutCuisine } = meal;
 
     return await prisma.$transaction(async (tx) => {
+        const provider = await tx.providerProfile.findUnique({
+            where: {
+                userId
+            },
+        })
+
         const data = await tx.category.upsert({
             where: { cuisine },
             update: {},
@@ -33,7 +39,8 @@ const createMeal = async (meal: CreateMeal) => {
         return await tx.meal.create({
             data: {
                 ...mealWithoutCuisine,
-                cuisineId: data.id
+                cuisineId: data.id,
+                providerId: provider?.id as string
             }
         })
     },
@@ -45,7 +52,6 @@ const createMeal = async (meal: CreateMeal) => {
 
 const updateMeal = async (mealData: CreateMeal, mealId: string) => {
     const { cuisine, ...restData } = mealData;
-    console.log(cuisine, restData);
     if (!cuisine) {
         return await prisma.meal.update({
             where: { id: mealId },
@@ -92,10 +98,22 @@ const updateOrder = async (orderId: string, status: status) => {
     })
 }
 
+const getProviderOrders = async (providerId: string) => {
+    return await prisma.providerProfile.findUnique({
+        where: {
+            userId: providerId
+        }, 
+        include: {
+            orders: true
+        }
+    })
+}
+
 export const providerService = {
     createProvider,
     createMeal,
     updateMeal,
     deleteMeal,
-    updateOrder
+    updateOrder,
+    getProviderOrders
 }

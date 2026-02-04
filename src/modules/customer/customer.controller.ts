@@ -31,8 +31,30 @@ const orderDetails = async (req: Request, res: Response) => {
     }
 }
 
+const addReview = async (req: Request, res: Response) => {
+    try {
+        const review = req.body;
+        const data = await customerService.addReview({...review, userId: req.user?.id});
+        res.status(200).send(data)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+}
+const getCuisine = async (req: Request, res: Response) => {
+    try {
+        const data = await customerService.getCuisine();
+        res.status(200).send(data)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+}
+
 export const customerController = {
     createOrder,
     getOrders,
-    orderDetails
+    orderDetails,
+    addReview,
+    getCuisine
 }

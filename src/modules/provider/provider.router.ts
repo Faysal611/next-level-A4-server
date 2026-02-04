@@ -10,5 +10,5 @@ router.post("/create-meal", verify(roles.provider), providerController.createMea
 router.post("/update-meal/:mealId", verify(roles.provider), providerController.updateMeal)
 router.delete("/delete-meal/:mealId", verify(roles.provider), providerController.deleteMeal)
 router.patch("/order/:orderId", verify(roles.provider), providerController.updateOrder)
-
+router.get("/order/:providerId", verify(roles.provider), providerController.getProviderOrders)
 export const providerRouter = router;

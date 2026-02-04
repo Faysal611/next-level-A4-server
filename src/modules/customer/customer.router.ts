@@ -8,5 +8,7 @@ const router = Router();
 router.post("/order", verify(roles.customer), customerController.createOrder)
 router.get("/order", verify(roles.customer), customerController.getOrders)
 router.get("/order/:orderId", verify(roles.customer), customerController.orderDetails)
+router.post("/add-review", verify(roles.customer), customerController.addReview)
+router.get("/get-cuisine", customerController.getCuisine)
 
 export const customerRouter = router;

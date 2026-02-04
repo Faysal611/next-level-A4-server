@@ -8,7 +8,20 @@ import { verify } from "./middlewares/verify";
 import { roles } from "../generated/prisma/enums";
 import { getUser } from "../utils/getUser";
 import { adminRouter } from "./modules/admin/admin.router";
+import cors from "cors";
 export const app = express();
+
+app.use(cors({
+    origin: [
+        "http://localhost:4000"
+    ],
+    credentials: true,                  // MUST be true for cookies/sessions
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],     // if needed for debugging
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+}))
 
 app.get("/api/auth/me", verify(roles.admin, roles.customer, roles.provider), getUser)
 app.all('/api/auth/{*any}', toNodeHandler(auth));

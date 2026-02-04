@@ -1,4 +1,4 @@
-import { mealCreateWithoutProviderProfileInput, orderUncheckedCreateInput } from "../../../generated/prisma/models"
+import { mealCreateWithoutProviderProfileInput, orderUncheckedCreateInput, reviewUncheckedCreateInput } from "../../../generated/prisma/models"
 import { prisma } from "../../../lib/prisma"
 
 
@@ -48,8 +48,20 @@ const orderDetails = async (orderId: string) => {
     })
 }
 
+const addReview = async (review: reviewUncheckedCreateInput) => {
+    return await prisma.review.create({
+        data: review
+    })
+}
+
+const getCuisine = async () => {
+    return await prisma.category.findMany();
+}
+
 export const customerService = {
     createOrder,
     getOrders,
-    orderDetails
+    orderDetails,
+    addReview,
+    getCuisine
 }
