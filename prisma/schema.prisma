@@ -53,7 +53,7 @@ model meal {
   description     String
   review          review[]
   orderId         order[]
-  cuisine         category?       @relation(fields: [cuisineId], references: [id])
+  cuisine         category?       @relation(fields: [cuisineId], references: [id], onDelete: Cascade)
   cuisineId       String
   price           Int
   image String?
