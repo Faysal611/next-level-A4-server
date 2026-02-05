@@ -637,7 +637,7 @@ var publicRouter = router3;
 
 // utils/getUser.ts
 var getUser = async (req, res) => {
-  return res.status(200).json({ ...req.user, ...req.session });
+  return res.status(200).json({ ...req.user, ...req.session, success: true });
 };
 
 // src/modules/admin/admin.router.ts
