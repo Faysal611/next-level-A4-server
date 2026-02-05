@@ -30,7 +30,9 @@ export const auth = betterAuth({
         }
     },
     trustedOrigins: [
-        process.env.POSTMAN_URL || "http://localhost:4000", // include deployed client URL via env var
+        "http://localhost:4000",
+        "http://localhost:3000",
+        process.env.POSTMAN_URL || "https://client-sigma-ten-42.vercel.app",
     ],
 
     advanced: {

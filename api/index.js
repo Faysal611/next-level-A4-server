@@ -88,7 +88,6 @@ var auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql"
   }),
-  trustedOrigins: [process.env.POSTMAN_URL],
   user: {
     additionalFields: {
       role: {
@@ -109,6 +108,23 @@ var auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }
+  },
+  trustedOrigins: [
+    "http://localhost:4000",
+    "http://localhost:3000",
+    process.env.POSTMAN_URL || "https://client-sigma-ten-42.vercel.app"
+  ],
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      // ← critical change
+      secure: true,
+      // ← must be true (HTTPS required)
+      httpOnly: true,
+      path: "/"
+    },
+    // optional but helpful
+    useSecureCookies: true
   }
 });
 
@@ -725,22 +741,33 @@ adminRouter.delete("/delete-cuisine/:cuisineId", verify(roles.admin), adminContr
 // src/app.ts
 import cors from "cors";
 var app = express();
+app.use(express.json());
+var allowedOrigins = [
+  "http://localhost:4000",
+  "http://localhost:3000",
+  process.env.POSTMAN_URL || "https://client-sigma-ten-42.vercel.app"
+];
 app.use(cors({
-  origin: [
-    "http://localhost:4000"
-  ],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error("CORS policy: Origin not allowed"), false);
+  },
   credentials: true,
-  // MUST be true for cookies/sessions
+  // Required for cookies
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  exposedHeaders: ["Set-Cookie"],
-  // if needed for debugging
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Cookie",
+    "X-Requested-With"
+  ],
+  exposedHeaders: ["Set-Cookie"]
 }));
 app.get("/api/auth/me", verify(roles.admin, roles.customer, roles.provider), getUser);
 app.all("/api/auth/{*any}", toNodeHandler(auth));
-app.use(express.json());
 app.use("/public", publicRouter);
 app.use("/customer", customerRouter);
 app.use("/provider", providerRouter);

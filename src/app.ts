@@ -10,9 +10,12 @@ import { getUser } from "../utils/getUser";
 import { adminRouter } from "./modules/admin/admin.router";
 import cors from "cors";
 export const app = express();
+app.use(express.json());
 
 const allowedOrigins = [
-    process.env.POSTMAN_URL || "http://localhost:4000",
+    "http://localhost:4000",
+    "http://localhost:3000",
+    process.env.POSTMAN_URL || "https://client-sigma-ten-42.vercel.app",
 ];
 
 app.use(cors({
@@ -38,7 +41,6 @@ app.use(cors({
 app.get("/api/auth/me", verify(roles.admin, roles.customer, roles.provider), getUser)
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 
-app.use(express.json());
 
 app.use("/public", publicRouter);
 app.use("/customer", customerRouter);
